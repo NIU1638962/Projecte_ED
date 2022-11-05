@@ -2,3 +2,8 @@
 """
 p1_main.py : ** REQUIRED ** El vostre codi de la classe MusicData.
 """
+import cfg
+
+
+class MusicData:
+    pass

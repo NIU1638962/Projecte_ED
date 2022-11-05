@@ -462,33 +462,52 @@ def func2(debug: int = 0):
     # Step 5: Insereix i esborra multiples vegades
     if debug:
         print(" generating UUID for: " + ff_fake)
+        print(len(files_uuids))
     un = files_uuids.generate_uuid(ff_fake)
     if debug:
         print("            ", files_uuids)
+        print(un)
+        print(len(files_uuids))
 
     if debug:
         print(" deleting for: " + ff_fake)
+        print(un)
+        print(len(files_uuids))
     files_uuids.remove_uuid(un)
     if debug:
         print("            ", files_uuids)
+        print(un)
+        print(len(files_uuids))
 
     if debug:
         print(" regenerating for: " + ff_fake)
+        print(un)
+        print(len(files_uuids))
     un = files_uuids.generate_uuid(ff_fake)
     if debug:
         print("            ", files_uuids)
+        print(un)
+        print(len(files_uuids))
 
     if debug:
         print(" redeleting for: " + ff_fake)
+        print(un)
+        print(len(files_uuids))
     files_uuids.remove_uuid(un)
     if debug:
         print("            ", files_uuids)
+        print(un)
+        print(len(files_uuids))
 
     if debug:
         print(" redeleting second time for: " + ff_fake)
+        print(un)
+        print(len(files_uuids))
     files_uuids.remove_uuid(un)
     if debug:
         print("            ", files_uuids)
+        print(un)
+        print(len(files_uuids))
 
     if (un is not None) and (len(files_uuids) == sum_mp3_repo):
         print("Comment :=>> [2.5] OK: UUIDs can be deleted")
