@@ -2,11 +2,16 @@
 """
 p1_main.py : ** REQUIRED ** El vostre codi de la classe MusicPlayer.
 """
+import cfg
 import vlc
 import time
+from MusicData import MusicData
 
 
 class MusicPlayer:
+
+    def __init__(self, music_data: MusicData):
+        self._music_Data = music_data
 
     def print_song(self, uuid: str):
         pass
