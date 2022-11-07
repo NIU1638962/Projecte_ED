@@ -1,52 +1,98 @@
 import eyed3
+from cfg import ROOT_DIR
 
-#Func3
+# Func3
+
 
 class MusicData:
     def __init__(self):
         self.__songs = {}
-    @property
-    def songs(self):
-        return self.__songs
-    
-    @songs.setter
-    def songs(self, value):
-        self.__songs = value
-        
+
+    def __len__(self):
+        return len(self.__songs)
+
     def add_song(self, uuid: str, file: str):
-        if uuid == "" or uuid in self.songs.keys() or file == "":
+        if uuid == "" or uuid in self.__songs.keys() or file == "":
             return None
-        #diccionari songs de forma {"uuid":["file",...,...]}
-        self.songs[uuid] = [file]
-    def remove_song(self,uuid: str): 
+        # diccionari songs de forma {"uuid":["file",...,...]}
+        self.__songs[uuid] = [file]
+
+    def remove_song(self, uuid: str):
         try:
-            del self.songs[uuid]
+            del self.__songs[uuid]
         except:
             return None
-    def load_metadata(self, uuid: str): 
-        
-        metadata = eyed3.load(self.songs[uuid][0])
-            
-        self.songs[uuid].append(metadata.tag.title)
-        self.songs[uuid].append(metadata.tag.artist)
-        self.songs[uuid].append(metadata.tag.album)
-        self.songs[uuid].append(metadata.tag.genre)
-        
-    def get_title(self, uuid: str): #-> str
-        return self.songs[uuid][1]
-    def get_artist(self, uuid: str): #-> str      
-        return self.songs[uuid][2]    
-    def get_album(self,uuid: str): #-> str
-        return self.songs[uuid][3]
-    def get_genre(self,uuid: str): #-> str  
-        return self.songs[uuid][4]
- 
 
-musicdata = MusicData()
-uuid = "a104f469-38bb-4b76-9252-f5af88b36437"
-file = "Corpus/Pop/Synth_Pop/King_Elizabeth_-_05_-_City_of_Love.mp3"
-musicdata.add_song(uuid, file)
+    def load_metadata(self, uuid: str):
 
-musicdata.load_metadata(uuid)
+        metadata = eyed3.load(ROOT_DIR + "\\" + self.__songs[uuid][0])
 
-print(musicdata.get_genre(uuid))
+        self.__songs[uuid].append(metadata.tag.title)
+        self.__songs[uuid].append(metadata.tag.artist)
+        self.__songs[uuid].append(metadata.tag.album)
+        self.__songs[uuid].append(metadata.tag.genre)
+        self.__songs[uuid].append(metadata.info.time_secs)
+
+    def get_filename(self, uuid: str) -> str:
+        try:
+            return self.__songs[uuid][0]
+        except KeyError:
+            return None
+        except IndexError:
+            return None
+
+    def get_title(self, uuid: str) -> str:
+        try:
+            return self.__songs[uuid][1]
+        except KeyError:
+            return None
+        except IndexError:
+            return None
+
+    def get_artist(self, uuid: str) -> str:
+        try:
+            return self.__songs[uuid][2]
+        except KeyError:
+            return None
+        except IndexError:
+            return None
+
+    def get_album(self, uuid: str) -> str:
+        try:
+            return self.__songs[uuid][3]
+        except KeyError:
+            return None
+        except IndexError:
+            return None
+
+    def get_genre(self, uuid: str) -> str:
+        try:
+            return self.__songs[uuid][4]
+        except KeyError:
+            return None
+        except IndexError:
+            return None
+
+    def get_duration(self, uuid: str):
+        try:
+            return self.__songs[uuid][5]
+        except KeyError:
+            return None
+
+    def existent(self, file: str) -> bool:
+        return file in [v[0] for v in self.__songs.items()]
+
+
+# musicdata = MusicData()
+# uuid = "a104f469-38bb-4b76-9252-f5af88b36437"
+# file = "Corpus-VPL/Pop/Synth_Pop/King_Elizabeth_-_05_-_City_of_Love.mp3"
+# musicdata.add_song(uuid, file)
+
+# musicdata.load_metadata(uuid)
+
+# print(musicdata.get_filename(uuid))
+# print(musicdata.get_title(uuid))
+# print(musicdata.get_artist(uuid))
+# print(musicdata.get_album(uuid))
+# print(musicdata.get_genre(uuid))
+# print(musicdata.get_duration(uuid))

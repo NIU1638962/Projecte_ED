@@ -2,11 +2,9 @@
 """
 p1_main.py : ** REQUIRED ** El vostre codi de la classe MusicPlayer.
 """
-import cfg
+from cfg import ROOT_DIR
 import vlc
 import time
-import eyed3
-import numpy
 from MusicData import MusicData
 
 
@@ -22,20 +20,21 @@ class MusicPlayer:
         self._music_data.get_album(uuid)
         self._music_data.get_genre(uuid)
 
-    def play_file(self, file: str):
-        self._player = vlc.MediaPlayer(file)
-        self._player.play()
-        timeout = time.time() + int(numpy.ceil(eyed3.load(file).info.time_secs))
-        return timeout
+    def play_file(self, file: str, mode=0):
+        if 0 < mode <= 2:
+            if self._music_data.existent(file):
+                self._player = vlc.MediaPlayer(ROOT_DIR + "\\" + file)
+                self._player.play()
 
-    def play_song(self, uuid: str, mode: int):
+    def play_song(self, uuid: str, mode=0):
         try:
             self._music_data.load_metadata(uuid)
             if 0 <= mode < 2:
                 self.print_song(uuid)
             if 0 < mode <= 2:
-                timeout = self.play_file(
+                self.play_file(
                     self._music_data.get_filename(uuid))
+                timeout = time.time() + self._music_data.get_duration(uuid)
                 while time.time() < timeout:
                     try:
                         time.sleep(1)
@@ -44,5 +43,5 @@ class MusicPlayer:
                     except:
                         break
                 self._player.stop()
-        except OSError:
-            return
+        except KeyError:
+            return None
