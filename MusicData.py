@@ -11,6 +11,10 @@ class MusicData:
     def __len__(self):
         return len(self.__songs)
 
+    def __iter__(self):
+        for elem in self.__songs.keys():
+            yield elem
+
     def add_song(self, uuid: str, file: str):
         if uuid == "" or uuid in self.__songs.keys() or file == "":
             return None
@@ -27,10 +31,10 @@ class MusicData:
 
         metadata = eyed3.load(ROOT_DIR + "\\" + self.__songs[uuid][0])
 
-        self.__songs[uuid].append(metadata.tag.title)
-        self.__songs[uuid].append(metadata.tag.artist)
-        self.__songs[uuid].append(metadata.tag.album)
-        self.__songs[uuid].append(metadata.tag.genre)
+        self.__songs[uuid].append(str(metadata.tag.title).lower())
+        self.__songs[uuid].append(str(metadata.tag.artist).lower())
+        self.__songs[uuid].append(str(metadata.tag.album).lower())
+        self.__songs[uuid].append(str(metadata.tag.genre).lower())
         self.__songs[uuid].append(metadata.info.time_secs)
 
     def get_filename(self, uuid: str) -> str:
@@ -81,7 +85,6 @@ class MusicData:
 
     def existent(self, file: str) -> bool:
         return file in [v[0] for v in self.__songs.items()]
-
 
 # musicdata = MusicData()
 # uuid = "a104f469-38bb-4b76-9252-f5af88b36437"
