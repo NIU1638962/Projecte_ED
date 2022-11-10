@@ -18,17 +18,17 @@ class MusicID:
 
         """
         # Guarda els uuids ja generats
-        self._diccionari_uuid = {}
+        self.__diccionari_uuid = {}
         # Guarda si un uuid ha sigut eliminat True si eliminat, False si no.
-        self._diccionari_remove = {}
+        self.__diccionari_remove = {}
         # Guarda la quantitat de uuids generats no eliminats.
-        self._len = 0
+        self.__len = 0
 
     def __len__(self) -> int:
-        return self._len
+        return self.__len
 
     def __str__(self) -> str:
-        return "\n".join([i + ": " + v for i, v in self._diccionari_uuid.items() if not self._diccionari_remove[v]])
+        return "\n".join([i + ": " + v for i, v in self.__diccionari_uuid.items() if not self.__diccionari_remove[v]])
 
     def generate_uuid(self, file: str) -> str:
         """
@@ -54,7 +54,7 @@ class MusicID:
         print("UUID generat: " + file_uuid)
         try:
             # Si no salta un key error al diccionari significa que ja s'ha entrat l'uuid
-            if not self._diccionari_remove[file_uuid]:
+            if not self.__diccionari_remove[file_uuid]:
                 # Si no ha estat esborrat no i existeix, informa de la colisió i retorna None.
                 print("UUID existeix i no esta eliminat {code except 1}")
                 return None
@@ -62,9 +62,9 @@ class MusicID:
         except KeyError as msg:
             # Si l'UUID ja no ha estat generat o ha estat esborrat,
             print(str(msg))
-            self._diccionari_uuid[file] = file_uuid
-            self._diccionari_remove[file_uuid] = False
-            self._len += 1
+            self.__diccionari_uuid[file] = file_uuid
+            self.__diccionari_remove[file_uuid] = False
+            self.__len += 1
             return file_uuid
 
     def get_uuid(self, file: str) -> str:
@@ -86,9 +86,9 @@ class MusicID:
         """
         try:
             # Generem uuid
-            file_uuid = self._diccionari_uuid[file]
+            file_uuid = self.__diccionari_uuid[file]
             # Si existeix al diccionari
-            if self._diccionari_remove[file_uuid]:
+            if self.__diccionari_remove[file_uuid]:
                 # Si está esborrado crear excepció de no existeix
                 raise KeyError("UUID removed")
             # I no está esborrada, retornem la uuid.
@@ -115,12 +115,12 @@ class MusicID:
         print("UUID rebut: " + file_uuid)
         try:
             # Comprovar que la uuid está creada i no está eliminada
-            if self._diccionari_remove[file_uuid]:
+            if self.__diccionari_remove[file_uuid]:
                 raise KeyError("UUID ja ha estat eliminat {code except 1}")
             print(
                 "UUID existeix i no esta eliminat, eliminant {code except 2}")
-            self._diccionari_remove[file_uuid] = True
-            self._len -= 1
+            self.__diccionari_remove[file_uuid] = True
+            self.__len -= 1
         except KeyError as msg:
             print(str(msg))
             return None
