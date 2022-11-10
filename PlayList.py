@@ -55,6 +55,6 @@ class PlayList:
             return None
     def remove_last_song(self): 
         try:
-            self.llista_repr.pop(-1)
+            self.playlist.pop(-1)
         except:
             return None
