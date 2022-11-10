@@ -1,5 +1,7 @@
 import eyed3
 from cfg import ROOT_DIR
+import os
+
 
 # Func3
 
@@ -12,8 +14,8 @@ class MusicData:
         return len(self.__songs)
 
     def __iter__(self):
-        for elem in self.__songs.keys():
-            yield elem
+        for uuid in self.__songs.keys():
+            yield uuid
 
     def add_song(self, uuid: str, file: str):
         if uuid == "" or uuid in self.__songs.keys() or file == "":
@@ -28,14 +30,22 @@ class MusicData:
             return None
 
     def load_metadata(self, uuid: str):
+        try:
 
-        metadata = eyed3.load(ROOT_DIR + "\\" + self.__songs[uuid][0])
+            metadata = eyed3.load(ROOT_DIR + os.sep + self.__songs[uuid][0])
 
-        self.__songs[uuid].append(str(metadata.tag.title).lower())
-        self.__songs[uuid].append(str(metadata.tag.artist).lower())
-        self.__songs[uuid].append(str(metadata.tag.album).lower())
-        self.__songs[uuid].append(str(metadata.tag.genre).lower())
-        self.__songs[uuid].append(metadata.info.time_secs)
+            self.__songs[uuid] = [self.__songs[uuid][0]]
+
+            self.__songs[uuid].append(str(metadata.tag.title).lower())
+            self.__songs[uuid].append(str(metadata.tag.artist).lower())
+            self.__songs[uuid].append(str(metadata.tag.album).lower())
+            self.__songs[uuid].append(str(metadata.tag.genre).lower())
+            self.__songs[uuid].append(metadata.info.time_secs)
+
+            return True
+
+        except:
+            return False
 
     def get_filename(self, uuid: str) -> str:
         try:
@@ -85,17 +95,3 @@ class MusicData:
 
     def existent(self, file: str) -> bool:
         return file in [v[0] for v in self.__songs.items()]
-
-# musicdata = MusicData()
-# uuid = "a104f469-38bb-4b76-9252-f5af88b36437"
-# file = "Corpus-VPL/Pop/Synth_Pop/King_Elizabeth_-_05_-_City_of_Love.mp3"
-# musicdata.add_song(uuid, file)
-
-# musicdata.load_metadata(uuid)
-
-# print(musicdata.get_filename(uuid))
-# print(musicdata.get_title(uuid))
-# print(musicdata.get_artist(uuid))
-# print(musicdata.get_album(uuid))
-# print(musicdata.get_genre(uuid))
-# print(musicdata.get_duration(uuid))
