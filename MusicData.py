@@ -30,22 +30,17 @@ class MusicData:
             return None
 
     def load_metadata(self, uuid: str):
-        try:
+        metadata = eyed3.load(ROOT_DIR + os.sep + self.__songs[uuid][0])
 
-            metadata = eyed3.load(ROOT_DIR + os.sep + self.__songs[uuid][0])
+        self.__songs[uuid] = [self.__songs[uuid][0]]
 
-            self.__songs[uuid] = [self.__songs[uuid][0]]
+        self.__songs[uuid].append(str(metadata.tag.title).lower())
+        self.__songs[uuid].append(str(metadata.tag.artist).lower())
+        self.__songs[uuid].append(str(metadata.tag.album).lower())
+        self.__songs[uuid].append(str(metadata.tag.genre).lower())
+        self.__songs[uuid].append(metadata.info.time_secs)
 
-            self.__songs[uuid].append(str(metadata.tag.title).lower())
-            self.__songs[uuid].append(str(metadata.tag.artist).lower())
-            self.__songs[uuid].append(str(metadata.tag.album).lower())
-            self.__songs[uuid].append(str(metadata.tag.genre).lower())
-            self.__songs[uuid].append(metadata.info.time_secs)
-
-            return True
-
-        except:
-            return False
+        return True
 
     def get_filename(self, uuid: str) -> str:
         try:
