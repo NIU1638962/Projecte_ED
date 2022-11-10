@@ -22,6 +22,9 @@ class PlayList:
     def musicPlayer(self):
         return self.__musicPlayer    
     
+    def __len__(self):
+        return len(self.playlist)
+    
     def load_file(self, file: str):
         self.playlist = []
         
