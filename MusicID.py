@@ -49,7 +49,8 @@ class MusicID:
         """
         print("File rebut: " + file)
         # Generem UUID.
-        file_uuid = str(uuid.uuid5(uuid.NAMESPACE_URL, file))
+        file_uuid = str(uuid.uuid5(uuid.NAMESPACE_URL,
+                        cfg.get_canonical_pathfile(file)))
         print("UUID generat: " + file_uuid)
         try:
             # Si no salta un key error al diccionari significa que ja s'ha entrat l'uuid
