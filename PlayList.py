@@ -44,3 +44,6 @@ class PlayList:
             self.__playlist.pop(-1)
         except:
             return None
+
+    def read_list(p_llista: list):
+        pass
