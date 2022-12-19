@@ -12,6 +12,13 @@ class PlayList:
     def __len__(self):
         return len(self.__playlist)
 
+    def __iter__(self):
+        for i in self.__playlist:
+            yield i
+
+    def __repr__(self) -> str:
+        return str(self.__playlist) + "\n" + str(self.__musicID) + "\n" + str(self.__musicPlayer)
+
     def load_file(self, file: str):
         self.__playlist = []
 

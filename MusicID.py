@@ -27,8 +27,13 @@ class MusicID:
     def __len__(self) -> int:
         return self.__len
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return "\n".join([i + ": " + v for i, v in self.__diccionari_uuid.items() if not self.__diccionari_remove[v]])
+
+    def __iter__(self):
+        for i, v in self.__diccionari_uuid.items():
+            if not self.__diccionari_remove[v]:
+                yield i, v
 
     def generate_uuid(self, file: str) -> str:
         """

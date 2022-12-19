@@ -29,6 +29,9 @@ class MusicPlayer:
         self.__music_data = music_data
         self.__player = None
 
+    def __repr__(self) -> str:
+        return str(self.__player) + "\n" + str(self.__music_data)
+
     def print_song(self, uuid: str):
         """
         Imprimeix per pantalla les metadades d'una canço.
