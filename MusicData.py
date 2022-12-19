@@ -20,6 +20,9 @@ class MusicData:
         for uuid in self.__songs.keys():
             yield uuid
 
+    def __repr__(self) -> str:
+        return str(self.__songs)
+
     def add_song(self, uuid: str, file: str):
         if uuid == "" or uuid in self.__songs.keys() or file == "":
             return None

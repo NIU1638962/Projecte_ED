@@ -27,6 +27,9 @@ class SearchMetadata:
         # Guardem l'objecte com del tipus MusicData per fer les consultes
         self.__music_data = music_data
 
+    def __repr__(self) -> str:
+        return str(self.__music_data)
+
     def title(self, sub: str) -> list:
         """
         Busca en les cançons guardades a la classe MusicData donada a la
@@ -168,12 +171,12 @@ class SearchMetadata:
         Parameters
         ----------
         sub
-            Varable a forrmatejar en string.
+            Varable a formatejar en string.
 
         Returns
         -------
         str
-            Variable sub formatejada a string en minúscules o strin buit "".
+            Variable sub formatejada a string en minúscules o string buit "".
 
         """
         try:

@@ -43,3 +43,6 @@ class MusicFiles:
 
     def files_removed(self) -> list:
         return self.__removed
+
+    def __repr__(self):
+        return "Actuals: " + str(self.__llista_songs) + "\nAfegits: " + str(self.__added) + "\nRetirats: " + str(self.__removed)
