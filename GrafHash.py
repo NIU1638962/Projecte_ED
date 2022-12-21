@@ -43,13 +43,15 @@ class GrafHash:
         return len(self._nodes)
 
     def insert_vertex(self, key, e: ElementData) -> None:
-        if type(e) == ElementData:
-         self._nodes[key] = self.Vertex(e)
-        raise TypeError
+        if type(e) is not ElementData:
+            raise TypeError("Not ElementData type")
+        self._nodes[key] = self.Vertex(e)
+        self._out[key] = {}
+        
 
     def insert_edge(self, n1, n2, p=1):
         self._out[n1][n2] = p
-        self._in[n1][n2] = p
+        self._out[n2][n1] = p
 
     def vertices(self):
         """Return una iteracio de tots els vertexs del graf."""
@@ -79,3 +81,25 @@ class GrafHash:
         for i in self._out.items:
             if key in i:
                 del i[key]
+
+    def del_edge(self, key1, key2):
+        del self._out[key1][key2]
+        del self._out[key2][key1]
+
+    def exist_edge(self, key1, key2):
+        try:
+            self._out[key1][key2]
+            self._out[key2][key1]
+            return True
+        except KeyError:
+            return False
+
+    def modify_edge_weight(self, key1, key2, new):
+        if self.exist_edge(key1, key2):
+            self._out[key1][key2] = new
+            self._out[key2][key1] = new
+            return new
+        raise KeyError("Edge doesn't exist")
+    
+    def edge_weight(self, key1, key2):
+        return self._out[key1][key2]
