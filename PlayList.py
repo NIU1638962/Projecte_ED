@@ -13,8 +13,8 @@ class PlayList:
         return len(self.__playlist)
 
     def __iter__(self):
-        for i in self.__playlist:
-            yield i
+        for i in range(len(self.__playlist - 1)):
+            yield self.__playlist[i], self.__playlist[i + 1]
 
     def __repr__(self) -> str:
         return str(self.__playlist) + "\n" + str(self.__musicID) + "\n" + str(self.__musicPlayer)
@@ -52,5 +52,8 @@ class PlayList:
         except:
             return None
 
-    def read_list(p_llista: list):
-        pass
+    def read_list(self, p_llista: list):
+        for uuid in p_llista:
+            if uuid not in self.__playlist:
+                self.__playlist.append(uuid)
+

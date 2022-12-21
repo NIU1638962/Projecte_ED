@@ -4,6 +4,7 @@ import eyed3
 from cfg import ROOT_DIR
 import os
 from PlayList import PlayList
+from GrafHash import GrafHash
 
 
 # Func3
@@ -11,7 +12,7 @@ from PlayList import PlayList
 
 class MusicData:
     def __init__(self):
-        self.__songs = {}
+        self.__songs = GrafHash()
 
     def __len__(self):
         return len(self.__songs)
@@ -98,7 +99,12 @@ class MusicData:
         return file in [v[0] for v in self.__songs.items()]
 
     def read_playlist(self, obj_playlist: PlayList):
-        pass
+        for uuid_1, uuid_2 in obj_playlist:
+            if self.__songs.exist_edge(uuid_1, uuid_2):
+                self.__songs.modify_edge_weight(uuid_1, uuid_2, self.__songs.edge_weight(uuid_1, uuid_2) + 1)
+            else:
+                self.__songs.insert_edge(uuid_1, uuid_2, 1)
+
 
     def get_song_rank(seld, uuid: str) -> int:
         pass
