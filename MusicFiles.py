@@ -5,6 +5,8 @@ import os.path
 
 
 class MusicFiles:
+    __slots__ = '__llista_songs', '__added', '__removed'
+    
     def __init__(self):
         self.__llista_songs = []
         self.__added = []
@@ -43,6 +45,13 @@ class MusicFiles:
 
     def files_removed(self) -> list:
         return self.__removed
-
+    
+    def __len__(self):
+        return len(self.__llista_songs)
+    def __iter__(self):
+        return self.__llista_songs.__iter__()
+    def __str__(self):
+        return self.__llista_songs.__str__()
     def __repr__(self):
-        return "Actuals: " + str(self.__llista_songs) + "\nAfegits: " + str(self.__added) + "\nRetirats: " + str(self.__removed)
+        return self.__llista_songs.__repr__()
+

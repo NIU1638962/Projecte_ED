@@ -1,16 +1,11 @@
-# -*- coding: utf-8 -*-
-"""
-p1_main.py : ** REQUIRED ** El vostre codi de la classe MusicPlayer.
-"""
-from cfg import ROOT_DIR
 import vlc
 import time
 from MusicData import MusicData
-import os
-
+import uuid
 
 class MusicPlayer:
-
+    __slots__ = '__music_data','__player'
+    
     def __init__(self, music_data: MusicData):
         """
         Inicialitza la classe.
@@ -26,11 +21,8 @@ class MusicPlayer:
         None.
 
         """
-        self.__music_data = music_data
+        self.__music_data = music_data.graf
         self.__player = None
-
-    def __repr__(self) -> str:
-        return str(self.__player) + "\n" + str(self.__music_data)
 
     def print_song(self, uuid: str):
         """
@@ -46,68 +38,61 @@ class MusicPlayer:
         None.
 
         """
-        print(self.__music_data.get_title(uuid))
-        print(self.__music_data.get_artist(uuid))
-        print(self.__music_data.get_album(uuid))
-        print(self.__music_data.get_genre(uuid))
-        print(self.__music_data.get_duration(uuid))
+        try: 
+            print("Titol :", self.__music_data[uuid].data.title)
+            print(" Artista :", self.__music_data[uuid].data.artist)
+            print("Album :",self.__music_data[uuid].data.album)
+            print("Genere :", self.__music_data[uuid].data.genre)
+            print("Duracio : ", self.songs[uuid].data.duration)
+        except:
+            return None
 
-    def play_file(self, file: str, mode=0):
-        """
-        Reprodueix a VCL una canço.
-
-        Parameters
-        ----------
-        file : str
-            path i nom d'arxiu de la canço desde el directori root.
-        mode : TYPE, optional
-            Si es vol veure només les metadades (0), reproduirles, (1) o tots
-            dos a la vegada (2). The default is 0.
-
-        Returns
-        -------
-        None.
-
-        """
-        if 0 < mode <= 2:
-            if self.__music_data.existent(file):
-                self.__player = vlc.MediaPlayer(ROOT_DIR + os.sep + file)
-                self.__player.play()
-
-    def play_song(self, uuid: str, mode=0):
-        """
-        Iniciar visualització per pantalla o reproducció d'una canço.
-        Mentre es reprodueix una canço premre <CTRL>+<C> a la consola per
-        finalitzar.
-
-        Parameters
-        ----------
-        uuid : str
-            Indicador unic de la canço.
-        mode : int, optional
-            Si es vol veure només les metadades (0), reproduirles, (1) o tots
-            dos a la vegada (2). The default is 0.
-
-        Returns
-        -------
-        None.
-
-        """
+    def play_file(self, file: str):
         try:
-            self.__music_data.load_metadata(uuid)
-            if 0 <= mode < 2:
-                self.print_song(uuid)
-            if 0 < mode <= 2:
-                self.play_file(
-                    self.__music_data.get_filename(uuid))
-                timeout = time.time() + self.__music_data.get_duration(uuid)
-                while time.time() < timeout:
+            uuid_gen = uuid.uuid5(uuid.NAMESPACE_URL, file)
+            player = vlc.MediaPlayer(file) 
+            print("Reproduint : ")
+            player.play()
+            timeout = time.time() + self.songs[uuid_gen].data.duration 
+            while True:
+                if time.time() < timeout:
                     try:
                         time.sleep(1)
                     except KeyboardInterrupt:  # STOP amb <CTRL>+<C> a la consola
                         break
-                    except:
-                        break
-                self.__player.stop()
-        except KeyError:
-            return None
+                else:
+                    break
+            player.stop()
+        except:
+            None
+    
+    def play_song(self, uuid: str, mode: int):
+        #MODE 0  # Imprimir per pantalla
+        #MODE 1  # Imprimir per pantalla i reproduïr so
+        #MODE 2  # Reproduïr so
+        
+        if mode == 0:
+            self.print_song
+        elif mode == 1:
+            self.print_song
+            self.play_file
+        elif mode == 2:
+            self.play_file
+            
+    def __hash__(self):
+        return hash(self.__music_data)
+    
+    def __eq__(self, other):
+        return self.__music_data == other.__music_data
+    
+    def __ne__(self, other):
+        return self.__music_data != other.__music_data
+    
+    def __lt__(self, other):
+        return self.__len__() < other.__len__()
+
+    def __str__(self):
+        return self.__music_data.__str__()
+    
+    def __repr__(self):
+        return self.__music_data.__repr__()

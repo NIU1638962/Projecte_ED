@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-p1_main.py : ** REQUIRED ** El vostre codi de la classe SearchMetadata.
-"""
 from MusicFiles import MusicFiles
 from MusicData import MusicData
 from MusicID import MusicID
@@ -9,7 +5,9 @@ import cfg
 
 
 class SearchMetadata:
-    def __init__(self, music_data):
+    __slots__ = '__music_data'
+    
+    def __init__(self, music_data: MusicData):
         """
         Inicialitza la classe.
 
@@ -26,9 +24,7 @@ class SearchMetadata:
         """
         # Guardem l'objecte com del tipus MusicData per fer les consultes
         self.__music_data = music_data
-
-    def __repr__(self) -> str:
-        return str(self.__music_data)
+    
 
     def title(self, sub: str) -> list:
         """
@@ -171,15 +167,112 @@ class SearchMetadata:
         Parameters
         ----------
         sub
-            Varable a formatejar en string.
+            Varable a forrmatejar en string.
 
         Returns
         -------
         str
-            Variable sub formatejada a string en minúscules o string buit "".
+            Variable sub formatejada a string en minúscules o strin buit "".
 
         """
         try:
             return str(sub).lower()
         except TypeError:
             return ""
+    
+    def get_similar(self, uuid : str, max_list : int) -> list:
+        """
+        Retorna una llista dels uuid's amb major semblança prenent com a parametre 
+        la mida maxima de la llista i el uuid a comparar
+
+        Parameters
+        ----------
+        uuid : str
+            uuid a comparar
+        max_list : int
+            mida maxima de la llista
+
+        Returns
+        -------
+        list
+            llista dels uuid's amb major semblança de major a menor
+
+        """
+        visitat, _ = self.__music_data.graf.DFS(uuid)
+        llista_total = []
+        AB, BA = 0, 0
+        for node in visitat:
+            AB_value, AB_nodes = self.__music_data.get_song_distance(uuid, node) 
+            BA_value, BA_nodes = self.__music_data.get_song_distance(node, uuid)
+            if (AB_value != 0):
+                AB = (AB_nodes/AB_value) * (self.__music_data.get_song_rank(uuid)/2)
+            if (BA_value != 0):
+                BA = (BA_nodes/BA_value) * (self.__music_data.get_song_rank(node)/2)
+                
+            similarity = AB + BA
+            if similarity != 0:
+                tuple = (similarity, node)
+                llista_total.append(tuple)
+        sorted_list = sorted(llista_total, reverse = True)
+        return [x[1] for x in sorted_list][:max_list]
+    
+    def get_topfive(self) -> list:
+        """
+        Returns
+        -------
+        list
+            5 millors cançons de tota la col·lecció
+
+        """
+        llista_rangs = []
+        for song in self.__music_data.graf:
+            rang = self.__music_data.get_song_rank(song)
+            llista_rangs.append((rang, song))
+            
+        top_5_list = [x[1] for x in sorted(llista_rangs, reverse = True)][:5]
+        
+        similarity = []
+        similars_5_lists = []
+        
+        for uuid in top_5_list:
+            similars_5_lists.append(self.get_similar(uuid, 5))
+            
+        top_25_list = similars_5_lists[0]
+        
+        for uuid in similars_5_lists[1:]:
+            top_25_list = self.or_operator(top_25_list, uuid) 
+            
+        for i in top_25_list:
+            llista = []
+            for j in top_25_list:
+                if i != j:
+                    AB, BA = 0, 0
+                    AB_value, AB_nodes = self.music.get_song_distance(i, j)
+                    BA_value, BA_nodes = self.music.get_song_distance(j, i)
+
+                    if (AB_value != 0):
+                        AB = (AB_nodes/AB_value)*(self.music.get_song_rank(i)/2)
+                        
+                    if (BA_value != 0):
+                        BA = (BA_nodes/BA_value)*(self.music.get_song_rank(j)/2)
+                        
+                    similar = AB + BA
+                    llista.append(similar)
+            similarity.append((sum(llista), str(i)))
+        
+        sorted_list = sorted(similarity, reverse = True)
+        cinc_millors = [x[1] for x in sorted_list if x in self.music.graf][:5]
+        
+        return cinc_millors
+    
+    def __len__(self):
+        return self.__music_data.__len__()
+    
+    def __iter__(self):
+        return self.__music_data.__iter__()
+    
+    def __str__(self):
+        return self.__music_data.__str__()
+    
+    def __repr__(self):
+        return self.__music_data.__repr__()

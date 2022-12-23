@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-p1_main.py : ** REQUIRED ** El vostre codi de la classe MusicID.
-"""
 import cfg
 import uuid
 
 
 class MusicID:
+    __slots__ = '__diccionari_uuid','__diccionari_remove','__len'
 
     def __init__(self):
         """
@@ -17,23 +14,13 @@ class MusicID:
         None.
 
         """
-        # Guarda els uuids ja generats
         self.__diccionari_uuid = {}
-        # Guarda si un uuid ha sigut eliminat True si eliminat, False si no.
-        self.__diccionari_remove = {}
-        # Guarda la quantitat de uuids generats no eliminats.
-        self.__len = 0
 
     def __len__(self) -> int:
-        return self.__len
+        return len(self.__diccionari_uuid)
 
-    def __repr__(self) -> str:
-        return "\n".join([i + ": " + v for i, v in self.__diccionari_uuid.items() if not self.__diccionari_remove[v]])
-
-    def __iter__(self):
-        for i, v in self.__diccionari_uuid.items():
-            if not self.__diccionari_remove[v]:
-                yield i, v
+    def __str__(self) -> str:
+        return self.__diccionari_uuid.__str__()
 
     def generate_uuid(self, file: str) -> str:
         """
@@ -54,23 +41,15 @@ class MusicID:
         """
         print("File rebut: " + file)
         # Generem UUID.
-        file_uuid = str(uuid.uuid5(uuid.NAMESPACE_URL,
-                        cfg.get_canonical_pathfile(file)))
-        print("UUID generat: " + file_uuid)
-        try:
-            # Si no salta un key error al diccionari significa que ja s'ha entrat l'uuid
-            if not self.__diccionari_remove[file_uuid]:
-                # Si no ha estat esborrat no i existeix, informa de la colisió i retorna None.
-                print("UUID existeix i no esta eliminat {code except 1}")
-                return None
-            raise KeyError("UUID esta eliminat, regenerant {code except 2}")
-        except KeyError as msg:
-            # Si l'UUID ja no ha estat generat o ha estat esborrat,
-            print(str(msg))
-            self.__diccionari_uuid[file] = file_uuid
-            self.__diccionari_remove[file_uuid] = False
-            self.__len += 1
-            return file_uuid
+        uuid_generat = uuid.uuid5(uuid.NAMESPACE_URL, file)
+
+        if uuid_generat in self.__diccionari_uuid:
+            print("ERROR : Aquest UUID ya existeix")
+            return None
+        else:
+            path = cfg.get_canonical_pathfile(file)
+            self.__diccionari_uuid[uuid_generat] = path
+            return uuid_generat
 
     def get_uuid(self, file: str) -> str:
         """
@@ -90,17 +69,14 @@ class MusicID:
 
         """
         try:
-            # Generem uuid
-            file_uuid = self.__diccionari_uuid[file]
-            # Si existeix al diccionari
-            if self.__diccionari_remove[file_uuid]:
-                # Si está esborrado crear excepció de no existeix
-                raise KeyError("UUID removed")
-            # I no está esborrada, retornem la uuid.
-            return file_uuid
-        except KeyError:
-            # Returnar none si no está
+            path =  cfg.get_canonical_pathfile(file)
+            uuids = self.__diccionari_uuid.keys()
+            paths = self.__diccionari_uuid.values()
+            uuid = list(uuids)[list(paths).index(path)] #Obtenim la posicio del arxiu i accedim per obtindre el respectiu uuid
+            return uuid
+        except:
             return None
+    
 
     def remove_uuid(self, file_uuid: str) -> str:
         """
@@ -117,15 +93,26 @@ class MusicID:
             UUID eliminat o None si ja estaba eliminat.
 
         """
-        print("UUID rebut: " + file_uuid)
         try:
-            # Comprovar que la uuid está creada i no está eliminada
-            if self.__diccionari_remove[file_uuid]:
-                raise KeyError("UUID ja ha estat eliminat {code except 1}")
-            print(
-                "UUID existeix i no esta eliminat, eliminant {code except 2}")
-            self.__diccionari_remove[file_uuid] = True
-            self.__len -= 1
-        except KeyError as msg:
-            print(str(msg))
+            del self.__diccionari_uuid[file_uuid]
+        except:
             return None
+        
+    def __iter__(self):
+        return tuple(self.__diccionari_uuid.values()).__iter__()
+    
+    def __hash__(self): 
+        return hash(tuple(self.__diccionari_uuid.keys()))
+    
+    def __eq__(self, other):
+        return self.__diccionari_uuid == other.__uuid_dict
+    
+    def __ne__(self, other):
+        return self.__diccionari_uuid != other.__uuid_dict
+    
+    def __lt__(self, other):
+        return self.__len__() < other.__len__()
+
+    def __repr__(self):
+        return self.__diccionari_uuid.__repr__()
+        

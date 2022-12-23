@@ -1,9 +1,12 @@
 import cfg
 
+
 # Func5
 
 
 class PlayList:
+    __slots__ = '__playlist', '__musicID', '__musicPlayer'
+    
     def __init__(self, musicID, musicPlayer):
         self.__playlist = []
         self.__musicID = musicID
@@ -11,13 +14,6 @@ class PlayList:
 
     def __len__(self):
         return len(self.__playlist)
-
-    def __iter__(self):
-        for i in range(len(self.__playlist - 1)):
-            yield self.__playlist[i], self.__playlist[i + 1]
-
-    def __repr__(self) -> str:
-        return str(self.__playlist) + "\n" + str(self.__musicID) + "\n" + str(self.__musicPlayer)
 
     def load_file(self, file: str):
         self.__playlist = []
@@ -51,9 +47,17 @@ class PlayList:
             self.__playlist.pop(-1)
         except:
             return None
-
+        
     def read_list(self, p_llista: list):
         for uuid in p_llista:
             if uuid not in self.__playlist:
                 self.__playlist.append(uuid)
-
+                
+    def __iter__(self):
+        return self.__playlist.__iter__()
+            
+    def __str__(self):
+        return self.__playlist.__str__()
+    
+    def __repr__(self):
+        return self.__playlist.__repr__()
