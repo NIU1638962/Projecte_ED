@@ -1,12 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-ElementData.py : ** REQUIRED ** El vostre codi de la classe ElementData.
-"""
-
 class ElementData:
-    __slots__ = ['__title', '__artist', '__album', '__genre', '__duration', '__filename']
+    __slots__ = '__title', '__artist', '__album', '__genre', '__duration', '__filename'
     
-    def __init__(self, title="", artist="", album="", genre="", duration=0, filename="") -> None:
+    def __init__(self, title="", artist="", album="", genre="", duration=0, filename=""):
         self.__title = title
         self.__artist = artist
         self.__album = album
