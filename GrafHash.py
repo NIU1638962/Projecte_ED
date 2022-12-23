@@ -170,7 +170,23 @@ class GrafHash:
                     cami.append(vei)
                     nodeAct = vei
             cami.reverse()
-        return cami        
+        return cami   
+    
+    def DFS(self, nInicial):
+        visitat = {} 
+        recorregut = []
+        if nInicial in self.nodes:
+            visitat[nInicial] = None
+            recorregut.append(nInicial)
+            self.DFSRec(nInicial, visitat, recorregut)
+        return visitat, recorregut
+
+    def DFSRec(self, n1, visitat, recorregut):                    
+        for adjacent in self.__e_out[n1]:
+            if adjacent not in visitat:
+                recorregut.append(adjacent)
+                visitat[adjacent] = n1
+                self.DFSRec(adjacent, visitat, recorregut)
         
     def vertices(self):
         return self.nodes.__iter__()
